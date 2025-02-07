@@ -6,11 +6,16 @@ import urllib.request
 import click
 import time
 
-# Directory where scripts are stored
-SCRIPTS_DIR = os.path.join(os.path.expanduser("~"), ".act", "scripts")
-QUARANTINE_DIR = os.path.join(os.path.expanduser("~"), ".act", "quarantine")
+# Base directory for act
+BASE_ACT_DIR = os.path.join(os.path.expanduser("~"), ".act")
+# Directory for local (user-created) scripts
+LOCAL_SCRIPTS_DIR = os.path.join(BASE_ACT_DIR, "local")
+# Directory for community scripts
+COMMUNITY_SCRIPTS_DIR = os.path.join(BASE_ACT_DIR, "community")
+# Directory for quarantine (used during installation)
+QUARANTINE_DIR = os.path.join(BASE_ACT_DIR, "quarantine")
 # Base URL for community scripts in the GitHub repository
-REPO_URL_BASE = "https://raw.githubusercontent.com/janoelze/act/main/scripts"
+REPO_URL_BASE = "https://raw.githubusercontent.com/janoelze/act/main/community-scripts"
 
 def fetch_community_script(script_name):
     # """Fetch a script from the community repository."""
@@ -21,7 +26,7 @@ def fetch_community_script(script_name):
     # except Exception as e:
     #     raise click.ClickException(f"Failed to download script: {e}")
 
-    # for development purposes let's install the script from the local directory
+    # For development purposes let's install the script from the local directory
     with open(f"{script_name}.py", "r") as f:
         return f.read()
 
@@ -30,36 +35,15 @@ def sanitize_script_name(script_name):
     return "".join(c for c in script_name if c.isalnum() or c in "-_")
 
 def ensure_scripts_dir():
-    """Ensure the scripts directory exists."""
-    os.makedirs(SCRIPTS_DIR, exist_ok=True)
+    """Ensure that all required directories exist."""
+    os.makedirs(LOCAL_SCRIPTS_DIR, exist_ok=True)
+    os.makedirs(COMMUNITY_SCRIPTS_DIR, exist_ok=True)
     os.makedirs(QUARANTINE_DIR, exist_ok=True)
 
 def parse_header(file_content: str) -> dict:
     """
     Parse a header block in the given file content and return a dictionary of its key-value pairs.
     The header block is expected to be enclosed between lines starting with "# ///".
-    
-    For example, given a file with a header like:
-    
-        # /// script
-        # command = "weather"
-        # aliases = ["weather", "wttr", "wttr.in", "temperature", "temp"]
-        # author = "janoelze"
-        # dependencies = [
-        #   "requests<3",
-        # ]
-        # ///
-    
-    This function will return:
-    
-        {
-            "command": "weather",
-            "aliases": ["weather", "wttr", "wttr.in", "temperature", "temp"],
-            "author": "janoelze",
-            "dependencies": ["requests<3"],
-        }
-    
-    Note: Lines that do not follow a "key = value" assignment are ignored.
     """
     lines = file_content.splitlines()
     header_started = False
@@ -77,17 +61,13 @@ def parse_header(file_content: str) -> dict:
                 break
 
         if header_started:
-            # Only consider lines that are commented out (start with '#')
             if stripped.startswith("#"):
-                # Remove the leading '#' and any extra whitespace
+                # Remove the leading '#' and extra whitespace
                 content = stripped[1:].strip()
                 header_lines.append(content)
 
-    # Combine header lines into a single string. This will correctly handle
-    # multi-line assignments (like lists spanning several lines).
     header_str = "\n".join(header_lines)
 
-    # Parse the header string as Python code using the ast module.
     try:
         tree = ast.parse(header_str, mode='exec')
     except SyntaxError as e:
@@ -96,14 +76,12 @@ def parse_header(file_content: str) -> dict:
     header_dict = {}
     for node in tree.body:
         if isinstance(node, ast.Assign):
-            # Ensure it's a simple assignment to a single variable name
             if len(node.targets) != 1:
                 continue
             target = node.targets[0]
             if isinstance(target, ast.Name):
                 key = target.id
                 try:
-                    # Use literal_eval to safely evaluate the value expression
                     value = ast.literal_eval(node.value)
                 except Exception as e:
                     raise ValueError(f"Unable to evaluate value for key '{key}'") from e
@@ -116,34 +94,52 @@ def parse_script_metadata(file_path):
     Parse the inline dependency header of a script file.
     Returns a dict with keys like 'command', 'aliases', 'author', 'dependencies'.
     """
-    metadata = {}
     with open(file_path, "r", encoding="utf-8") as f:
-        metadata = parse_header(f.read())
-    return metadata
+        return parse_header(f.read())
 
 def find_script(script_identifier):
     """
-    Find a script file by matching the given identifier to the script's 'command'
-    or one of its 'aliases' in the metadata.
+    Find a script by its identifier.
+    
+    If the identifier is prefixed with a namespace (e.g. "community:weather" or "local:weather"),
+    the search is limited to that namespace. Without a prefix, the search first looks in local scripts,
+    then in community scripts.
+    
     Returns the full path of the script or None if not found.
     """
     ensure_scripts_dir()
-    for entry in os.listdir(SCRIPTS_DIR):
-        if entry.endswith(".py"):
-            script_path = os.path.join(SCRIPTS_DIR, entry)
-            metadata = parse_script_metadata(script_path)
-            # Check if the identifier matches the 'command'
-            if metadata.get("command") == script_identifier:
-                return script_path
-            # Check if the identifier is among the aliases
-            aliases = metadata.get("aliases", [])
-            if isinstance(aliases, list) and script_identifier in aliases:
-                return script_path
+    namespace = None
+    command = script_identifier
+
+    if ":" in script_identifier:
+        namespace, command = script_identifier.split(":", 1)
+        namespace = namespace.lower()
+
+    if namespace == "local":
+        directories = [LOCAL_SCRIPTS_DIR]
+    elif namespace == "community":
+        directories = [COMMUNITY_SCRIPTS_DIR]
+    else:
+        directories = [LOCAL_SCRIPTS_DIR, COMMUNITY_SCRIPTS_DIR]
+
+    for directory in directories:
+        for entry in os.listdir(directory):
+            if entry.endswith(".py"):
+                script_path = os.path.join(directory, entry)
+                try:
+                    metadata = parse_script_metadata(script_path)
+                except Exception:
+                    continue
+                if metadata.get("command") == command:
+                    return script_path
+                aliases = metadata.get("aliases", [])
+                if isinstance(aliases, list) and command in aliases:
+                    return script_path
     return None
 
 @click.group()
 def cli():
-    """act - A CLI tool to manage and run python scripts."""
+    """act - A CLI tool to manage and run Python scripts."""
     ensure_scripts_dir()
 
 @cli.command()
@@ -154,14 +150,14 @@ def create(script_name):
     
     If SCRIPT_NAME is not provided, you will be prompted for one.
     A new script with a template header is created and then opened in your default editor.
+    (Local scripts are stored in the 'local' namespace.)
     """
     if not script_name:
         script_name = click.prompt("Enter script command name", type=str)
     filename = f"{script_name}.py"
-    script_path = os.path.join(SCRIPTS_DIR, filename)
+    script_path = os.path.join(LOCAL_SCRIPTS_DIR, filename)
     if os.path.exists(script_path):
-        raise click.ClickException(f"Script '{script_name}' already exists.")
-    # Template header with metadata
+        raise click.ClickException(f"Local script '{script_name}' already exists.")
     template = f'''# /// script
 # command = "{script_name}"
 # aliases = ["{script_name}"]
@@ -173,8 +169,7 @@ def create(script_name):
 '''
     with open(script_path, "w", encoding="utf-8") as f:
         f.write(template)
-    click.echo(f"Script '{script_name}' created at {script_path}")
-    # Open the newly created script in the editor
+    click.echo(f"Local script '{script_name}' created at {script_path}")
     ctx = click.get_current_context()
     ctx.invoke(edit, script_identifier=script_name)
 
@@ -185,6 +180,7 @@ def edit(script_identifier):
     Edit an existing script in your default editor.
     
     SCRIPT_IDENTIFIER can be the command name or one of its aliases.
+    You can also prefix with a namespace (e.g. "community:weather").
     """
     script_path = find_script(script_identifier)
     if not script_path:
@@ -193,30 +189,58 @@ def edit(script_identifier):
     subprocess.run([editor, script_path])
 
 @cli.command()
-@click.argument("script_identifier")
+@click.option("-q", "--quiet", is_flag=True, help="Suppress completion message.")
+@click.argument("script_identifier", required=False)
 @click.argument("args", nargs=-1)
-def run(script_identifier, args):
-  """
-  Run a script.
-  
-  SCRIPT_IDENTIFIER is the command name or one of its aliases.
-  Any additional arguments will be passed to the script.
-  Before running, the script's dependencies (if any) are installed via pip.
-  """
-  script_path = find_script(script_identifier)
-  if not script_path:
-    raise click.ClickException(f"Script '{script_identifier}' not found.")
-  click.echo(f"Running script '{script_identifier}'...\n")
-  start_time = time.time()
-  # Run the script with any additional arguments
-  result = subprocess.run(['uv', 'run', '--quiet', script_path] + list(args))
-  end_time = time.time()
-  elapsed = end_time - start_time
-  if result.returncode == 0:
-    click.secho(f"Done in {elapsed:.2f}s.", fg="green")
-  else:
-    click.secho(f"Failed with exit code {result.returncode}.", fg="red")
-  sys.exit(result.returncode)
+def run(quiet, script_identifier, args):
+    """
+    Run a script.
+    
+    SCRIPT_IDENTIFIER is the command name (optionally namespaced) or one of its aliases.
+    If not supplied, a list of installed scripts is displayed for selection.
+    Additional arguments will be passed to the script.
+    
+    The search first checks local scripts, then community scripts.
+    """
+    if not script_identifier:
+        ensure_scripts_dir()
+        scripts = []
+        # Collect local scripts
+        for entry in os.listdir(LOCAL_SCRIPTS_DIR):
+            if entry.endswith(".py"):
+                script_path = os.path.join(LOCAL_SCRIPTS_DIR, entry)
+                metadata = parse_script_metadata(script_path)
+                command = metadata.get("command", entry)
+                scripts.append(("local:" + command, script_path))
+        # Collect community scripts
+        for entry in os.listdir(COMMUNITY_SCRIPTS_DIR):
+            if entry.endswith(".py"):
+                script_path = os.path.join(COMMUNITY_SCRIPTS_DIR, entry)
+                metadata = parse_script_metadata(script_path)
+                command = metadata.get("command", entry)
+                scripts.append(("community:" + command, script_path))
+        if not scripts:
+            raise click.ClickException("No installed scripts found.")
+        click.echo("Installed scripts:")
+        for idx, (command, _) in enumerate(scripts, start=1):
+            click.echo(f"{idx}: {command}")
+        choice = click.prompt("Enter the number of the script to run", type=int)
+        if choice < 1 or choice > len(scripts):
+            raise click.ClickException("Invalid selection.")
+        script_identifier, script_path = scripts[choice - 1]
+    else:
+        script_path = find_script(script_identifier)
+        if not script_path:
+            raise click.ClickException(f"Script '{script_identifier}' not found.")
+    start_time = time.time()
+    # Run the script with any additional arguments (using 'uv run' as in the original code)
+    result = subprocess.run(['uv', 'run', '--quiet', script_path] + list(args))
+    elapsed = time.time() - start_time
+    if result.returncode == 0 and not quiet:
+        click.secho(f"Done in {elapsed:.2f}s.", fg="green")
+    elif result.returncode != 0:
+        click.secho(f"Failed with exit code {result.returncode}.", fg="red")
+    sys.exit(result.returncode)
 
 @cli.command()
 @click.argument("script_identifier")
@@ -224,7 +248,7 @@ def delete(script_identifier):
     """
     Delete a script.
     
-    SCRIPT_IDENTIFIER is the command name or one of its aliases.
+    SCRIPT_IDENTIFIER is the command name (optionally namespaced) or one of its aliases.
     """
     script_path = find_script(script_identifier)
     if not script_path:
@@ -235,18 +259,25 @@ def delete(script_identifier):
 @cli.command(name="list")
 def list_scripts():
     """
-    List all available scripts.
-    
-    The command names (as specified in the script header) are printed.
+    List all available scripts, grouped by namespace.
     """
     ensure_scripts_dir()
     found = False
-    for entry in os.listdir(SCRIPTS_DIR):
+    click.echo("Local scripts:")
+    for entry in os.listdir(LOCAL_SCRIPTS_DIR):
         if entry.endswith(".py"):
-            script_path = os.path.join(SCRIPTS_DIR, entry)
+            script_path = os.path.join(LOCAL_SCRIPTS_DIR, entry)
             metadata = parse_script_metadata(script_path)
             command = metadata.get("command", entry)
-            click.echo(command)
+            click.echo(f"  {command}")
+            found = True
+    click.echo("Community scripts:")
+    for entry in os.listdir(COMMUNITY_SCRIPTS_DIR):
+        if entry.endswith(".py"):
+            script_path = os.path.join(COMMUNITY_SCRIPTS_DIR, entry)
+            metadata = parse_script_metadata(script_path)
+            command = metadata.get("command", entry)
+            click.echo(f"  {command}")
             found = True
     if not found:
         click.echo("No scripts found.")
@@ -262,54 +293,49 @@ def meta(script_identifier):
     for key, value in metadata.items():
         click.echo(f"{key}: {value}")
 
-
 @cli.command()
 @click.argument("script_name")
 def install(script_name):
-  """
-  Install a script from the community repository.
-  
-  The script is downloaded from the GitHub repository and stored locally.
-  """
-  clean_script_name = sanitize_script_name(script_name)
-  content = fetch_community_script(clean_script_name)
+    """
+    Install a script from the community repository.
+    
+    The script is downloaded from the GitHub repository, stored in quarantine, and then,
+    after confirmation, moved to the community scripts directory.
+    """
+    clean_script_name = sanitize_script_name(script_name)
+    content = fetch_community_script(clean_script_name)
 
-  if not content:
-    raise click.ClickException(f"Failed to download script: {e}")
-  
-  script_path = os.path.join(QUARANTINE_DIR, f"{clean_script_name}.py")
+    if not content:
+        raise click.ClickException("Failed to download script.")
 
-  with open(script_path, "w", encoding="utf-8") as f:
-    f.write(content)
+    quarantine_path = os.path.join(QUARANTINE_DIR, f"{clean_script_name}.py")
+    with open(quarantine_path, "w", encoding="utf-8") as f:
+        f.write(content)
 
-  metadata = parse_script_metadata(script_path)
+    metadata = parse_script_metadata(quarantine_path)
 
-  # ensure the script has the required fields
-  for field in ["command", "author"]:
-    if field not in metadata:
-      raise click.ClickException(f"Script is missing required field '{field}'")
+    for field in ["command", "author"]:
+        if field not in metadata:
+            raise click.ClickException(f"Script is missing required field '{field}'")
 
-  # click.echo(f"Installing script '{script_name}' from {REPO_URL_BASE}/{script_name}.py")
-  # # Ask for confirmation
-  prompt = (
-    f"'{clean_script_name}' is a community script by {metadata['author']}.\r\n"
-    "It may access the internet, read and write files, and use third party libraries.\r\n"
-    "Are you sure you want to install this script?"
-  )
-  
-  if not click.confirm(prompt):
-    click.secho("Installation aborted.", fg="red")
-    return
-  try:
-    content = fetch_community_script(script_name)
-  except Exception as e:
-    raise click.ClickException(f"Failed to download script: {e}")
-  
-  # move the script from quarantine to the scripts directory
-  new_script_path = os.path.join(SCRIPTS_DIR, f"{clean_script_name}.py")
-  os.rename(script_path, new_script_path)
+    prompt = (
+        f"'{clean_script_name}' is a community script by {metadata['author']}.\n"
+        "It may access the internet, read and write files, and use third party libraries.\n"
+        "Are you sure you want to install this script?"
+    )
+    
+    if not click.confirm(prompt):
+        click.secho("Installation aborted.", fg="red")
+        return
 
-  click.secho(f"Script '{clean_script_name}' installed successfully.", fg="green")
+    # Check for name collisions in the community namespace
+    new_script_path = os.path.join(COMMUNITY_SCRIPTS_DIR, f"{clean_script_name}.py")
+    if os.path.exists(new_script_path):
+        raise click.ClickException(f"A community script with command '{clean_script_name}' is already installed.")
+
+    # Move the script from quarantine to the community directory
+    os.rename(quarantine_path, new_script_path)
+    click.secho(f"Community script '{clean_script_name}' installed successfully.", fg="green")
 
 if __name__ == "__main__":
     cli()
