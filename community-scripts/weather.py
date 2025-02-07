@@ -12,4 +12,4 @@ import requests
 
 # use wttr.in to get the weather in Berlin
 resp = requests.get("https://wttr.in/Berlin?format=3")
-print(resp.text.strip())s
+print(resp.text.strip())
