@@ -9,7 +9,12 @@
 # ///
 
 import requests
+import argparse
 
-# use wttr.in to get the weather in Berlin
-resp = requests.get("https://wttr.in/Berlin?format=3")
+parser = argparse.ArgumentParser(description="Get the current weather for a specified city")
+parser.add_argument("--city", type=str, required=True, help="Name of the city")
+args = parser.parse_args()
+
+# use wttr.in to get the weather for the specified city
+resp = requests.get(f"https://wttr.in/{args.city}?format=3")
 print(resp.text.strip())

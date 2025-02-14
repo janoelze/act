@@ -1,12 +1,29 @@
 # act
 
-## NAME
-
 `act` is a command-line tool to manage custom Python scripts.
 
 ## SYNOPSIS
 
     act <command> [options] [arguments]
+
+## EXAMPLES
+
+```shell
+# Installs the weather script from the /community-scripts directory
+$ act install weather
+'weather' is a community script by janoelze.
+It may access the internet, read and write files, and use third party libraries.
+Are you sure you want to install this script? [y/N]: y
+Community script 'weather' installed successfully.
+Successfully recreated shims for 2 scripts in '/Users/janoelze/.act/bin'.
+```
+
+```shell
+# Runs the weather script with the city argument
+act run weather --city Berlin
+=> Berlin: 🌨  +2°C
+=> Done in 0.50s.
+```
 
 ## INSTALLATION
 
@@ -55,23 +72,3 @@ act helps you manage your custom Python scripts by providing commands to create,
 - **install <script_name>**  
   Install a community script from the GitHub repository.  
   Example: `act install weather`
-
-## INSTALLATION
-
-1. Clone or download the repository.
-2. Ensure Python and required dependencies are installed.
-3. Place your scripts in the designated directory automatically set up by act.
-
-## AUTHOR
-
-janoelze
-
-## COPYRIGHT
-
-MIT License
-
-## SEE ALSO
-
-Python, Click, subprocess
-
-// ...existing content...
