@@ -23,7 +23,7 @@ def resize_image(path, width):
     img = Image.open(path)
     wpercent = (width / float(img.size[0]))
     hsize = int((float(img.size[1]) * float(wpercent)))
-    img = img.resize((width, hsize), Image.ANTIALIAS)
+    img = img.resize((width, hsize), Image.Resampling.LANCZOS)
     new_path = f"{os.path.splitext(path)[0]}-{width}{os.path.splitext(path)[1]}"
     img.save(new_path)
     return new_path
