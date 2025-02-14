@@ -2,7 +2,7 @@
 set -e
 
 # Check for required commands
-command -v python3 >/dev/null 2>&1 || { echo >&2 "python3 is required but not installed. Aborting."; exit 1; }
+command -v uv >/dev/null 2>&1 || { echo >&2 "uv is required but not installed. Aborting."; exit 1; }
 command -v git >/dev/null 2>&1 || { echo >&2 "git is required but not installed. Aborting."; exit 1; }
 command -v curl >/dev/null 2>&1 || { echo >&2 "curl is required but not installed. Aborting."; exit 1; }
 
@@ -36,14 +36,14 @@ mkdir -p "$ACT_BIN_DIR"
 ACT_WRAPPER="$ACT_BIN_DIR/act"
 cat > "$ACT_WRAPPER" << 'EOF'
 #!/usr/bin/env bash
-python3 "$HOME/.act/act.py" "$@"
+uv run "$HOME/.act/act.py" "$@"
 EOF
 
 chmod +x "$ACT_WRAPPER"
 
 # Run the 'link' command to create command shims for installed scripts
 echo "Creating command shims..."
-python3 "$ACT_SCRIPT" link
+uv run "$ACT_SCRIPT" link
 
 echo ""
 echo "act has been installed into $ACT_DIR."

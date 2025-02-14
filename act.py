@@ -163,6 +163,8 @@ def create_bin_shims():
 
     # Clear existing shims.
     for filename in os.listdir(BIN_DIR):
+        if filename == "act":
+            continue
         file_path = os.path.join(BIN_DIR, filename)
         if os.path.isfile(file_path):
             os.remove(file_path)
@@ -182,7 +184,7 @@ def create_bin_shims():
                 except Exception:
                     continue
                 command = metadata.get("command")
-                if not command:
+                if not command or command == "act":
                     continue
                 # If a local script with the same command exists, skip the community version.
                 if command in scripts and scripts[command]["namespace"] == "local":
