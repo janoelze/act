@@ -8,8 +8,10 @@
 
 ## EXAMPLES
 
+Installs a script from the /community-scripts directory:
+
+
 ```shell
-# Installs the weather script from the /community-scripts directory
 $ act install weather
 'weather' is a community script by janoelze.
 It may access the internet, read and write files, and use third party libraries.
@@ -18,6 +20,8 @@ Community script 'weather' installed successfully.
 Successfully recreated shims for 2 scripts in '/Users/janoelze/.act/bin'.
 ```
 
+Runs the script with the city argument:
+
 ```shell
 # Runs the weather script with the city argument
 $ act run weather --city Berlin
@@ -25,9 +29,18 @@ Berlin: 🌨  +2°C
 Done in 0.50s.
 ```
 
+Or—if you've added the ~/.act/bin directory to your PATH—you can run the script directly:
+
+```shell
+# Runs the weather script with the city argument
+$ weather --city Berlin
+Berlin: 🌨  +2°
+Done in 0.50s.
+```
+
 ## INSTALLATION
 
-You can install act by running the following command in your terminal:
+You can install or update act by running the following command in your terminal:
 
 ```shell
 curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/install.sh | sh
