@@ -36,14 +36,14 @@ mkdir -p "$ACT_BIN_DIR"
 ACT_WRAPPER="$ACT_BIN_DIR/act"
 cat > "$ACT_WRAPPER" << 'EOF'
 #!/usr/bin/env bash
-uv run "$HOME/.act/act.py" "$@"
+uv run --quiet "$HOME/.act/act.py" "$@"
 EOF
 
 chmod +x "$ACT_WRAPPER"
 
 # Run the 'link' command to create command shims for installed scripts
 echo "Creating command shims..."
-uv run "$ACT_SCRIPT" link
+uv run --quiet "$ACT_SCRIPT" link
 
 echo ""
 echo "act has been installed into $ACT_DIR."
