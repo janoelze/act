@@ -1,8 +1,8 @@
-# act — A CLI Tool for Managing Python Scripts
+# act
 
 ## NAME
 
-act — A command-line tool to create, edit, run, install, and manage Python scripts.
+`act` is a command-line tool to manage custom Python scripts.
 
 ## SYNOPSIS
 
