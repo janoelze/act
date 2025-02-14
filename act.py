@@ -286,7 +286,7 @@ def create(script_name):
 @click.argument("script_identifier")
 def edit(script_identifier):
     """
-    Edit an existing script in your default editor.
+    Edit an existing script in your default GUI editor.
 
     SCRIPT_IDENTIFIER can be the command name or one of its aliases.
     You can also prefix with a namespace (e.g. "community:weather").
@@ -294,8 +294,25 @@ def edit(script_identifier):
     script_path = find_script(script_identifier)
     if not script_path:
         raise click.ClickException(f"Script '{script_identifier}' not found.")
-    editor = os.environ.get("EDITOR", "nano")
-    subprocess.run([editor, script_path])
+
+    # Prefer the GUI editor specified in the EDITOR env variable.
+    editor_command = os.environ.get("EDITOR")
+    if editor_command:
+        # Split the command if it contains spaces
+        editor_cmd = editor_command.split()
+    else:
+        # Fallback defaults for common platforms.
+        if sys.platform.startswith("darwin"):
+            # Open with TextEdit on macOS
+            editor_cmd = ["open", "-e"]
+        elif sys.platform.startswith("win"):
+            # Use Notepad on Windows
+            editor_cmd = ["notepad"]
+        else:
+            # Use gedit on Linux as default GUI editor
+            editor_cmd = ["gedit"]
+
+    subprocess.run(editor_cmd + [script_path])
 
 @cli.command()
 @click.option("-q", "--quiet", is_flag=True, help="Suppress completion message.")
