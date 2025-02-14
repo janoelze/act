@@ -8,7 +8,7 @@
 
 ## EXAMPLES
 
-Installs a script from the /community-scripts directory:
+Installs a script from the [community-scripts](https://github.com/janoelze/act/tree/main/community-scripts) directory:
 
 
 ```shell
