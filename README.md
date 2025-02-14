@@ -1,4 +1,4 @@
-# act
+# ACT
 
 `act` is a command-line tool to manage custom Python scripts.
 
