@@ -13,13 +13,9 @@ import os
 import argparse
 import concurrent.futures
 from PIL import Image
+import glob
 
 def resize_image(path, width):
-    ###
-    # Resize the image at the given path to the specified width.
-    # * Maintains the aspect ratio.
-    # * Saved the resized image to the same path, but appends "-$width" to the filename.
-    ###
     img = Image.open(path)
     wpercent = (width / float(img.size[0]))
     hsize = int((float(img.size[1]) * float(wpercent)))
@@ -28,19 +24,10 @@ def resize_image(path, width):
     img.save(new_path)
     return new_path
 
-def resize_images(directory, width):
-    # Scan the directory and separate image files and subdirectories
-    image_files = []
-    subdirs = []
-    with os.scandir(directory) as it:
-        for entry in it:
-            if entry.is_file() and entry.name.lower().endswith((".jpg", ".jpeg", ".png")):
-                image_files.append(entry.path)
-            elif entry.is_dir():
-                subdirs.append(entry.path)
+def resize_images(paths, width):
+    image_files = [p for p in paths if p.lower().endswith((".jpg", ".jpeg", ".png"))]
 
-    # Only start threads if there are any image files to resize
-    if len(image_files) > 0:
+    if image_files:
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = [executor.submit(resize_image, path, width) for path in image_files]
             for future in concurrent.futures.as_completed(futures):
@@ -52,16 +39,23 @@ def resize_images(directory, width):
         print("No image files found to resize")
 
 def main():
-    parser = argparse.ArgumentParser(description="Resizes the images in the current directory to a specified width")
+    parser = argparse.ArgumentParser(description="Resize images to a specified width with glob support.")
     parser.add_argument("width", type=int, help="The width to resize the images to")
+    parser.add_argument("path", nargs='?', default=os.getcwd(), help="Directory or file pattern to resize (supports glob)")
     args = parser.parse_args()
 
-    # check if the width is valid
     if args.width <= 0:
         print("Error: Invalid width")
         sys.exit(1)
 
-    resize_images(os.getcwd(), args.width)
+    paths = []
+
+    if os.path.isdir(args.path):
+        paths = glob.glob(os.path.join(args.path, "**", "*.*"), recursive=True)
+    else:
+        paths = glob.glob(args.path)
+
+    resize_images(paths, args.width)
 
 if __name__ == "__main__":
     main()
