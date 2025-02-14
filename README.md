@@ -20,9 +20,9 @@ Successfully recreated shims for 2 scripts in '/Users/janoelze/.act/bin'.
 
 ```shell
 # Runs the weather script with the city argument
-act run weather --city Berlin
-=> Berlin: 🌨  +2°C
-=> Done in 0.50s.
+$ act run weather --city Berlin
+Berlin: 🌨  +2°C
+Done in 0.50s.
 ```
 
 ## INSTALLATION
