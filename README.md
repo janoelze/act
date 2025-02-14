@@ -1,15 +1,33 @@
 # act — A CLI Tool for Managing Python Scripts
 
 ## NAME
+
 act — A command-line tool to create, edit, run, install, and manage Python scripts.
 
 ## SYNOPSIS
+
     act <command> [options] [arguments]
 
+## INSTALLATION
+
+You can install act by running the following command in your terminal:
+
+```shell
+curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/install.sh | sh
+```
+
+Uninstall act by running the following command:
+
+```shell
+curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/uninstall.sh | sh
+```
+
 ## DESCRIPTION
+
 act helps you manage your custom Python scripts by providing commands to create, edit, run, install community scripts, and view metadata. It organizes scripts in a dedicated directory and lets you manage dependencies automatically.
 
 ## COMMANDS
+
 - **create [script_name]**  
   Create a new script with a template header for metadata.  
   Example: `act create weather`
@@ -39,17 +57,21 @@ act helps you manage your custom Python scripts by providing commands to create,
   Example: `act install weather`
 
 ## INSTALLATION
+
 1. Clone or download the repository.
 2. Ensure Python and required dependencies are installed.
 3. Place your scripts in the designated directory automatically set up by act.
 
 ## AUTHOR
+
 janoelze
 
 ## COPYRIGHT
+
 MIT License
 
 ## SEE ALSO
+
 Python, Click, subprocess
 
 // ...existing content...

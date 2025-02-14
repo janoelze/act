@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+# /// script
+# dependencies = ["click"]
+# ///
+ 
 import os
 import sys
 import ast
