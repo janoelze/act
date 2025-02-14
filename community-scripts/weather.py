@@ -12,7 +12,7 @@ import requests
 import argparse
 
 parser = argparse.ArgumentParser(description="Get the current weather for a specified city")
-parser.add_argument("--city", type=str, required=True, help="Name of the city")
+parser.add_argument("-c", "--city", type=str, default="Berlin", help="Name of the city (default: Berlin)")
 args = parser.parse_args()
 
 # use wttr.in to get the weather for the specified city
