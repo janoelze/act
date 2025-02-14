@@ -205,7 +205,6 @@ def create_bin_shims():
 uv run -q {script_path} run {command} "$@"
 """
             shim_file.write(contents)
-            print(contents)
         os.chmod(shim_path, 0o755)
         created_shims.append(shim_path)
 
