@@ -202,7 +202,7 @@ def create_bin_shims():
         with open(shim_path, "w", encoding="utf-8") as shim_file:
             # The shim forwards all arguments to "act run <command>".
             contents=f"""#!/bin/sh
-uv run -q {script_path} run {command} "$@"
+uv run -q {script_path} run {command} -- "$@"
 """
             shim_file.write(contents)
         os.chmod(shim_path, 0o755)
