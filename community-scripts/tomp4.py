@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # /// script
-# command = "webmp4"
+# command = "tomp4"
 # description = "Convert any video format to a web-ready MP4 with small file size and reasonable resolution"
-# aliases = ["webmp4", "convert-webmp4", "mp4"]
+# aliases = ["tomp4"]
 # author = "janoelze"
 # dependencies = []
 # ///
@@ -13,7 +13,7 @@ import subprocess
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: webmp4 <input_video>")
+        print("Usage: tomp4 <input_video>")
         sys.exit(1)
     
     input_file = sys.argv[1]
