@@ -473,6 +473,7 @@ def install(script_name):
     # Move the script from quarantine to the community directory
     os.rename(quarantine_path, new_script_path)
     global_echo(f"Community script '{clean_script_name}' installed successfully.")
+    global_echo(f"You can now run the script with '$ act run {clean_script_name}' or '$ {clean_script_name}'")
 
     # Update the shims after installing a new script (without reloading the shell)
     update_shims(reload_shell=False)

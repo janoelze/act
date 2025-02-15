@@ -43,7 +43,7 @@ chmod +x "$ACT_WRAPPER"
 
 # Run the 'link' command to create command shims for installed scripts
 echo "Creating command shims..."
-uv run --quiet "$ACT_SCRIPT" link
+uv run --quiet "$ACT_SCRIPT" -q link
 
 echo ""
 echo "act has been installed into $ACT_DIR."
