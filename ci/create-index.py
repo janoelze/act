@@ -62,9 +62,9 @@ def create_index(directory):
         with open(readme_path, 'r') as f:
             content = f.read()
 
-        table_header = "| Title | Description | View Script |\n| --- | --- | --- |\n"
+        table_header = "| Title | Description |  |\n| --- | --- | --- |\n"
         table_rows = "\n".join(
-            f"| {script['command']} | {script['description'] or ''} | [View Script]({script['file']}) |"
+            f"| **{script['command']}** | {script['description'] or ''} | [View Script]({script['file']}) |"
             for script in index['scripts']
         )
         scripts_list = table_header + table_rows
