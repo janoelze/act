@@ -1,0 +1,37 @@
+name: Update Community Scripts Index
+
+on:
+  push:
+    paths:
+      - 'community-scripts/**'
+
+jobs:
+  update_index:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install --upgrade pip
+
+      - name: Run script to update community scripts index
+        run: python ci/update-readme.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add community-scripts/index README.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Updated README"
+            git push
+          fi
