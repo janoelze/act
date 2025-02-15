@@ -1,5 +1,6 @@
 # /// script
 # command = "vpntoggle"
+# description = "Toggle VPN connection using OpenVPN"
 # aliases = ["vpntoggle"]
 # author = "janoelze"
 # dependencies = ["pyotp==2.9.0"]
