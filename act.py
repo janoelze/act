@@ -219,26 +219,37 @@ def update_shims(reload_shell=False):
     """
     created_shims = create_bin_shims()
     if not created_shims:
-        click.echo("No installed scripts found to link.")
+        global_echo("No installed scripts found to link.")
     else:
-        click.echo(f"Successfully recreated shims for {len(created_shims)} scripts in '{BIN_DIR}'.")
+        global_echo(f"Successfully recreated shims for {len(created_shims)} scripts in '{BIN_DIR}'.")
 
     if reload_shell:
         path_dirs = os.environ.get("PATH", "").split(os.pathsep)
         if BIN_DIR not in path_dirs:
-            click.echo(f"Warning: {BIN_DIR} is not in your PATH.")
+            global_echo(f"Warning: {BIN_DIR} is not in your PATH.")
             if click.confirm("Would you like to add it temporarily and reload your shell now?"):
                 os.environ["PATH"] = BIN_DIR + os.pathsep + os.environ.get("PATH", "")
                 shell = os.environ.get("SHELL", "/bin/sh")
-                click.echo("Reloading shell...")
+                global_echo("Reloading shell...")
                 os.execvp(shell, [shell, "-l"])
             else:
-                click.echo("Please add the following line to your shell configuration to use the shims immediately:")
-                click.echo(f"  export PATH={BIN_DIR}:$PATH")
+                global_echo("Please add the following line to your shell configuration to use the shims immediately:")
+                global_echo(f"  export PATH={BIN_DIR}:$PATH")
+
+# Add helper to conditionally echo messages.
+def global_echo(message, **kwargs):
+    ctx = click.get_current_context(silent=True)
+    if ctx and ctx.obj and ctx.obj.get("quiet"):
+        return
+    click.echo(message, **kwargs)
 
 @click.group()
-def cli():
+@click.option("-q", "--quiet", is_flag=True, help="Suppress echos")
+@click.pass_context
+def cli(ctx, quiet):
     """act - A CLI tool to manage and run Python scripts."""
+    ctx.ensure_object(dict)
+    ctx.obj["quiet"] = quiet
     ensure_scripts_dir()
 
 @cli.command()
@@ -278,7 +289,7 @@ def create(script_name):
 '''
     with open(script_path, "w", encoding="utf-8") as f:
         f.write(template)
-    click.echo(f"Local script '{script_name}' created at {script_path}")
+    global_echo(f"Local script '{script_name}' created at {script_path}")
     ctx = click.get_current_context()
     ctx.invoke(edit, script_identifier=script_name)
 
@@ -315,10 +326,9 @@ def edit(script_identifier):
     subprocess.run(editor_cmd + [script_path])
 
 @cli.command()
-@click.option("-q", "--quiet", is_flag=True, help="Suppress completion message.")
 @click.argument("script_identifier", required=False)
 @click.argument("args", nargs=-1)
-def run(quiet, script_identifier, args):
+def run(script_identifier, args):
     """
     Run a script.
 
@@ -347,9 +357,9 @@ def run(quiet, script_identifier, args):
                 scripts.append(("community:" + command, script_path))
         if not scripts:
             raise click.ClickException("No installed scripts found.")
-        click.echo("Installed scripts:")
+        global_echo("Installed scripts:")
         for idx, (command, _) in enumerate(scripts, start=1):
-            click.echo(f"{idx}: {command}")
+            global_echo(f"{idx}: {command}")
         choice = click.prompt("Enter the number of the script to run", type=int)
         if choice < 1 or choice > len(scripts):
             raise click.ClickException("Invalid selection.")
@@ -362,8 +372,11 @@ def run(quiet, script_identifier, args):
     # Run the script with any additional arguments (using 'uv run' as in the original code)
     result = subprocess.run(['uv', 'run', '--quiet', script_path] + list(args))
     elapsed = time.time() - start_time
-    if result.returncode == 0 and not quiet:
-        click.secho(f"Done in {elapsed:.2f}s.", fg="green")
+    if result.returncode == 0:
+        # Only show success message if not globally suppressed.
+        ctx = click.get_current_context()
+        if not (ctx and ctx.obj and ctx.obj.get("quiet")):
+            click.secho(f"Done in {elapsed:.2f}s.", fg="green")
     elif result.returncode != 0:
         click.secho(f"Failed with exit code {result.returncode}.", fg="red")
     sys.exit(result.returncode)
@@ -389,24 +402,24 @@ def list_scripts():
     """
     ensure_scripts_dir()
     found = False
-    click.echo("Local scripts:")
+    global_echo("Local scripts:")
     for entry in os.listdir(LOCAL_SCRIPTS_DIR):
         if entry.endswith(".py"):
             script_path = os.path.join(LOCAL_SCRIPTS_DIR, entry)
             metadata = parse_script_metadata(script_path)
             command = metadata.get("command", entry)
-            click.echo(f"  {command}")
+            global_echo(f"  {command}")
             found = True
-    click.echo("Community scripts:")
+    global_echo("Community scripts:")
     for entry in os.listdir(COMMUNITY_SCRIPTS_DIR):
         if entry.endswith(".py"):
             script_path = os.path.join(COMMUNITY_SCRIPTS_DIR, entry)
             metadata = parse_script_metadata(script_path)
             command = metadata.get("command", entry)
-            click.echo(f"  {command}")
+            global_echo(f"  {command}")
             found = True
     if not found:
-        click.echo("No scripts found.")
+        global_echo("No scripts found.")
 
 @cli.command(name="meta")
 @click.argument("script_identifier")
@@ -417,7 +430,7 @@ def meta(script_identifier):
         raise click.ClickException(f"Script '{script_identifier}' not found.")
     metadata = parse_script_metadata(script_path)
     for key, value in metadata.items():
-        click.echo(f"{key}: {value}")
+        global_echo(f"{key}: {value}")
 
 @cli.command()
 @click.argument("script_name")
@@ -459,7 +472,7 @@ def install(script_name):
 
     # Move the script from quarantine to the community directory
     os.rename(quarantine_path, new_script_path)
-    click.secho(f"Community script '{clean_script_name}' installed successfully.", fg="green")
+    global_echo(f"Community script '{clean_script_name}' installed successfully.")
 
     # Update the shims after installing a new script (without reloading the shell)
     update_shims(reload_shell=False)
