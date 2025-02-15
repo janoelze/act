@@ -64,7 +64,7 @@ def create_index(directory):
 
         table_header = "| Title | Description |  |\n| --- | --- | --- |\n"
         table_rows = "\n".join(
-            f"| **{script['command']}** | {script['description'] or ''} | [View Script]({script['file']}) |"
+            f"| **{script['command']}** | {script['description'] or ''} | [View]({script['file']}) |"
             for script in index['scripts']
         )
         scripts_list = table_header + table_rows
