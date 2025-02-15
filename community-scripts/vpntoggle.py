@@ -16,9 +16,7 @@
 import pyotp
 import subprocess
 import os
-import re
 import time
-import platform
 import fcntl
 
 LOCK_FILE = "/tmp/vpn_toggle.lock"

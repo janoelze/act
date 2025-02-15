@@ -6,7 +6,7 @@
 
     act <command> [options] [arguments]
 
-## EXAMPLES
+## USAGE
 
 Installs a script from the [community-scripts](https://github.com/janoelze/act/tree/main/community-scripts) directory:
 
@@ -52,9 +52,21 @@ Uninstall act by running the following command:
 curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/uninstall.sh | sh
 ```
 
-## DESCRIPTION
+## SCRIPTS
 
-act helps you manage your custom Python scripts by providing commands to create, edit, run, install community scripts, and view metadata. It organizes scripts in a dedicated directory and lets you manage dependencies automatically.
+<!-- ACT_SCRIPTS_START -->
+| Title | Description | View Script |
+| --- | --- | --- |
+| diskclean | List the largest files and directories in your home directory to help free up disk space (optimized with concurrency) | [View Script](./community-scripts/diskclean.py) |
+| tomp3 | Convert any file format to an MP3 using ffmpeg | [View Script](./community-scripts/tomp3.py) |
+| benchmark | Benchmark a given URL using ApacheBench | [View Script](./community-scripts/benchmark.py) |
+| webmp4 | Convert any video format to a web-ready MP4 with small file size and reasonable resolution | [View Script](./community-scripts/webmp4.py) |
+| ytdl | Download YouTube videos via yt-dlp | [View Script](./community-scripts/ytdl.py) |
+| weather | Get the current weather in Berlin | [View Script](./community-scripts/weather.py) |
+| resize | Resizes the images in the current directory to a specified width | [View Script](./community-scripts/resize.py) |
+| ytdl-audio | Download the audio of a YouTube video via yt-dlp | [View Script](./community-scripts/ytdl-audio.py) |
+| vpntoggle | Toggle VPN connection using OpenVPN | [View Script](./community-scripts/vpntoggle.py) |
+<!-- ACT_SCRIPTS_END -->
 
 ## COMMANDS
 

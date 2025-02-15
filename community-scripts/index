@@ -1,0 +1,107 @@
+{
+    "scripts": [
+        {
+            "file": "./community-scripts/diskclean.py",
+            "command": "diskclean",
+            "description": "List the largest files and directories in your home directory to help free up disk space (optimized with concurrency)",
+            "author": "janoelze",
+            "aliases": [
+                "diskclean",
+                "diskusage",
+                "du",
+                "clean-disk"
+            ]
+        },
+        {
+            "file": "./community-scripts/tomp3.py",
+            "command": "tomp3",
+            "description": "Convert any file format to an MP3 using ffmpeg",
+            "author": "janoelze",
+            "aliases": [
+                "tomp3",
+                "to-mp3",
+                "convert-to-mp3"
+            ]
+        },
+        {
+            "file": "./community-scripts/benchmark.py",
+            "command": "benchmark",
+            "description": "Benchmark a given URL using ApacheBench",
+            "author": "janoelze",
+            "aliases": [
+                "benchmark",
+                "ab-benchmark"
+            ]
+        },
+        {
+            "file": "./community-scripts/webmp4.py",
+            "command": "webmp4",
+            "description": "Convert any video format to a web-ready MP4 with small file size and reasonable resolution",
+            "author": "janoelze",
+            "aliases": [
+                "webmp4",
+                "convert-webmp4",
+                "mp4"
+            ]
+        },
+        {
+            "file": "./community-scripts/ytdl.py",
+            "command": "ytdl",
+            "description": "Download YouTube videos via yt-dlp",
+            "author": "janoelze",
+            "aliases": [
+                "youtube",
+                "yt",
+                "ytdl",
+                "yt-dl",
+                "yt-dlp"
+            ]
+        },
+        {
+            "file": "./community-scripts/weather.py",
+            "command": "weather",
+            "description": "Get the current weather in Berlin",
+            "author": "janoelze",
+            "aliases": [
+                "weather",
+                "wttr",
+                "wttr.in",
+                "temperature",
+                "temp"
+            ]
+        },
+        {
+            "file": "./community-scripts/resize.py",
+            "command": "resize",
+            "description": "Resizes the images in the current directory to a specified width",
+            "author": "janoelze",
+            "aliases": [
+                "resize"
+            ]
+        },
+        {
+            "file": "./community-scripts/ytdl-audio.py",
+            "command": "ytdl-audio",
+            "description": "Download the audio of a YouTube video via yt-dlp",
+            "author": "janoelze",
+            "aliases": [
+                "youtubemp3",
+                "yt-mp3",
+                "ytdl-mp3",
+                "yt-dl-mp3",
+                "yt-dlp-mp3",
+                "yt2mp3",
+                "youtube2mp3"
+            ]
+        },
+        {
+            "file": "./community-scripts/vpntoggle.py",
+            "command": "vpntoggle",
+            "description": "Toggle VPN connection using OpenVPN",
+            "author": "janoelze",
+            "aliases": [
+                "vpntoggle"
+            ]
+        }
+    ]
+}
