@@ -42,13 +42,25 @@ EOF
 chmod +x "$ACT_WRAPPER"
 
 # Run the 'link' command to create command shims for installed scripts
-echo "Creating command shims..."
-uv run --quiet "$ACT_SCRIPT" -q link
+uv run --quiet "$ACT_SCRIPT" link
+
+# Prompt to add PATH if not already present in shell config.
+if [[ "$SHELL" == *"zsh" ]]; then
+    CONFIG_FILE="$HOME/.zshrc"
+elif [[ "$SHELL" == *"bash" ]]; then
+    CONFIG_FILE="$HOME/.bashrc"
+else
+    CONFIG_FILE="$HOME/.bashrc"
+fi
+
+# todo: check the actual $PATH variable, not just the file contents
+if ! grep -q 'export PATH="\$HOME/.act/bin:\$PATH"' "$CONFIG_FILE" 2>/dev/null; then
+    read -p "Do you want to add '$ACT_BIN_DIR' to your PATH in $CONFIG_FILE? (y/n): " add_path
+    if [[ "$add_path" == "y" || "$add_path" == "Y" ]]; then
+        echo 'export PATH="$HOME/.act/bin:$PATH"' >> "$CONFIG_FILE"
+        echo "Added PATH extension to $CONFIG_FILE."
+    fi
+fi
 
 echo ""
 echo "act has been installed into $ACT_DIR."
-echo "To use act, ensure that '$ACT_BIN_DIR' is in your PATH."
-echo "For example, add the following line to your shell configuration (~/.bashrc, ~/.zshrc, etc.):"
-echo 'export PATH="$HOME/.act/bin:$PATH"'
-echo ""
-echo "Installation complete. Enjoy act!"
