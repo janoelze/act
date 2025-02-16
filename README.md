@@ -57,16 +57,16 @@ curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/uninstall.sh | sh
 <!-- ACT_SCRIPTS_START -->
 | Command | Description |  |
 | --- | --- | --- |
-| **resize** | Resizes the images in the current directory to a specified width (Created by janoelze) | [View](./community-scripts/resize.py) |
 | **benchmark** | Benchmark a given URL using ApacheBench (Created by janoelze) | [View](./community-scripts/benchmark.py) |
-| **weather** | Get the current weather in Berlin (Created by janoelze) | [View](./community-scripts/weather.py) |
-| **tomp4** | Convert any video format to a web-ready MP4 with small file size and reasonable resolution (Created by janoelze) | [View](./community-scripts/tomp4.py) |
-| **tomp3** | Convert any file format to an MP3 using ffmpeg (Created by janoelze) | [View](./community-scripts/tomp3.py) |
-| **diskclean** | List the largest files and directories in your home directory to help free up disk space (optimized with concurrency) (Created by janoelze) | [View](./community-scripts/diskclean.py) |
 | **currenttime** | Print the current time (Created by janoelze) | [View](./community-scripts/test.py) |
+| **diskclean** | List the largest files and directories in your home directory to help free up disk space (optimized with concurrency) (Created by janoelze) | [View](./community-scripts/diskclean.py) |
+| **resize** | Resizes the images in the current directory to a specified width (Created by janoelze) | [View](./community-scripts/resize.py) |
+| **tomp3** | Convert any file format to an MP3 using ffmpeg (Created by janoelze) | [View](./community-scripts/tomp3.py) |
+| **tomp4** | Convert any video format to a web-ready MP4 with small file size and reasonable resolution (Created by janoelze) | [View](./community-scripts/tomp4.py) |
 | **vpntoggle** | Toggle VPN connection using OpenVPN (Created by janoelze) | [View](./community-scripts/vpntoggle.py) |
-| **ytdl-audio** | Download the audio of a YouTube video via yt-dlp (Created by janoelze) | [View](./community-scripts/ytdl-audio.py) |
+| **weather** | Get the current weather in Berlin (Created by janoelze) | [View](./community-scripts/weather.py) |
 | **ytdl** | Download YouTube videos via yt-dlp (Created by janoelze) | [View](./community-scripts/ytdl.py) |
+| **ytdl-audio** | Download the audio of a YouTube video via yt-dlp (Created by janoelze) | [View](./community-scripts/ytdl-audio.py) |
 <!-- ACT_SCRIPTS_END -->
 
 ## COMMANDS
