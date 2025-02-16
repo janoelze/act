@@ -96,10 +96,14 @@ if __name__ == "__main__":
     main()
 ```
 
-Aliases are alternative names for the script that can be used to run it.
+Aliases are alternative names for the script that can be used to run it. For example, the `helloworld` script can also be run with the `hw` command:
 
 ```shell
+$ act run helloworld
+Hello, world!
 $ act run hw
+Hello, world!
+$ hw
 Hello, world!
 ```
 
