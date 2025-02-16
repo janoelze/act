@@ -69,6 +69,36 @@ curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/uninstall.sh | sh
 | **ytdl-audio** | Download the audio of a YouTube video via yt-dlp (Created by janoelze) | [View](./community-scripts/ytdl-audio.py) |
 <!-- ACT_SCRIPTS_END -->
 
+# SCRIPT ANATOMY
+
+The script header contains metadata that describes the script's behavior and dependencies.
+
+```python
+#!/usr/bin/env python3
+# /// script
+# command = "helloworld"
+# description = "Hello, world!"
+# aliases = ["hw"]
+# author = "janoelze"
+# dependencies = []
+# ///
+
+import os
+
+def main():
+    print("Hello, world!")
+
+if __name__ == "__main__":
+    main()
+```
+
+Aliases are alternative names for the script that can be used to run it.
+
+```shell
+$ act run hw
+Hello, world!
+```
+
 ## COMMANDS
 
 - **create [script_name]**  
