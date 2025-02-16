@@ -69,7 +69,7 @@ curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/uninstall.sh | sh
 | **ytdl-audio** | Download the audio of a YouTube video via yt-dlp (Created by janoelze) | [View](./community-scripts/ytdl-audio.py) |
 <!-- ACT_SCRIPTS_END -->
 
-# SCRIPT ANATOMY
+## SCRIPT ANATOMY
 
 The script header contains metadata that describes the script's behavior and dependencies.
 
