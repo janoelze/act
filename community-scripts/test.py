@@ -10,6 +10,7 @@
 import os
 
 def main():
+    print("Current time:")
     os.system("date")
 
 if __name__ == "__main__":
