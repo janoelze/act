@@ -25,17 +25,16 @@ REPO_URL_BASE = "https://raw.githubusercontent.com/janoelze/act/main/community-s
 BIN_DIR = os.path.join(os.path.expanduser("~"), ".act", "bin")
 
 def fetch_community_script(script_name):
-    # Uncomment below for actual network fetching.
-    # url = f"{REPO_URL_BASE}/{script_name}.py"
-    # try:
-    #     with urllib.request.urlopen(url) as response:
-    #         return response.read().decode("utf-8")
-    # except Exception as e:
-    #     raise click.ClickException(f"Failed to download script: {e}")
+    url = f"{REPO_URL_BASE}/{script_name}.py"
+    try:
+        with urllib.request.urlopen(url) as response:
+            return response.read().decode("utf-8")
+    except Exception as e:
+        raise click.ClickException(f"Failed to download script: {e}")
 
     # For development purposes, install the script from the local directory.
-    with open(f"./community-scripts/{script_name}.py", "r") as f:
-        return f.read()
+    # with open(f"./community-scripts/{script_name}.py", "r") as f:
+    #     return f.read()
 
 def sanitize_script_name(script_name):
     """Enforce alphanumeric characters, dashes, and underscores only."""
