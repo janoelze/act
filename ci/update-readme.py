@@ -44,6 +44,9 @@ def create_index(directory):
                     "aliases": header_info['aliases']
                 })
 
+    # Sort scripts alphabetically by command (case-insensitive)
+    index['scripts'] = sorted(index['scripts'], key=lambda script: script['command'].lower())
+
     # Update the README file
     self_dir = os.path.dirname(os.path.realpath(__file__))
     readme_path = os.path.join(self_dir, '..', 'README.md')
