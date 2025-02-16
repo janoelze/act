@@ -106,33 +106,33 @@ Hello, world!
 ## COMMANDS
 
 - **create [script_name]**  
-  Create a new script with a template header for metadata.  
+  Create a new script with a template header for metadata.<br>
   Example: `act create weather`
 
 - **edit <script_name>**  
-  Open an existing script in your default editor.  
+  Open an existing script in your default editor.<br>
   Example: `act edit weather`
 
 - **run <script_name> [args]**  
-  Execute a script, automatically handling its dependencies.  
+  Execute a script, automatically handling its dependencies.<br>
   Example: `act run weather --city Boston`
 
 - **delete <script_name>**  
-  Remove an existing script.  
+  Remove an existing script.<br>
   Example: `act delete weather`
 
 - **list**  
-  List all available scripts by their command names.  
+  List all available scripts by their command names.<br>
   Example: `act list`
 
 - **meta <script_name>**  
-  Display metadata of a specific script.  
+  Display metadata of a specific script.<br>
   Example: `act meta weather`
 
 - **install <script_name>**  
-  Install a community script from the GitHub repository.  
+  Install a community script from the GitHub repository.<br>
   Example: `act install weather`
 
 - **link**  
-  Create shims for all installed scripts, making them globally accessible.
+  Create shims for all installed scripts, making them globally accessible.<br>
   Example: `act link`
