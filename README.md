@@ -62,8 +62,8 @@ curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/uninstall.sh | sh
 | Command | Description |  |
 | --- | --- | --- |
 | **benchmark** | Benchmark a given URL using ApacheBench (Created by janoelze) | [View](./community-scripts/benchmark.py) |
-| **currenttime** | Print the current time (Created by janoelze) | [View](./community-scripts/test.py) |
 | **diskclean** | List the largest files and directories in your home directory to help free up disk space (optimized with concurrency) (Created by janoelze) | [View](./community-scripts/diskclean.py) |
+| **helloworld** | A simple script that prints 'Hello, world!' (Created by janoelze) | [View](./community-scripts/helloworld.py) |
 | **resize** | Resizes the images in the current directory to a specified width (Created by janoelze) | [View](./community-scripts/resize.py) |
 | **tomp3** | Convert any file format to an MP3 using ffmpeg (Created by janoelze) | [View](./community-scripts/tomp3.py) |
 | **tomp4** | Convert any video format to a web-ready MP4 with small file size and reasonable resolution (Created by janoelze) | [View](./community-scripts/tomp4.py) |
