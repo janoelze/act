@@ -2,6 +2,10 @@
 
 `act` is a command-line tool to manage custom Python scripts.
 
+## WHY
+
+I really love how `uv` allows users to [define dependencies](https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies) inline with their python code. `act` takes this idea and extends the script header with a `command` property and then allows global calls to these scripts by their command name. Additionally shims are created for each script in the `~/.act/bin` directory, allowing you to run the scripts directly from the terminal.
+
 ## SYNOPSIS
 
     act <command> [options] [arguments]
