@@ -109,15 +109,15 @@ Hello, world!
   Create a new script with a template header for metadata.  
   Example: `act create weather`
 
-- **edit <script_identifier>**  
+- **edit <script_name>**  
   Open an existing script in your default editor.  
   Example: `act edit weather`
 
-- **run <script_identifier> [args]**  
+- **run <script_name> [args]**  
   Execute a script, automatically handling its dependencies.  
   Example: `act run weather --city Boston`
 
-- **delete <script_identifier>**  
+- **delete <script_name>**  
   Remove an existing script.  
   Example: `act delete weather`
 
@@ -125,10 +125,14 @@ Hello, world!
   List all available scripts by their command names.  
   Example: `act list`
 
-- **meta <script_identifier>**  
+- **meta <script_name>**  
   Display metadata of a specific script.  
   Example: `act meta weather`
 
 - **install <script_name>**  
   Install a community script from the GitHub repository.  
   Example: `act install weather`
+
+- **link**  
+  Create shims for all installed scripts, making them globally accessible.
+  Example: `act link`
