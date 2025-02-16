@@ -44,16 +44,8 @@ def create_index(directory):
                     "aliases": header_info['aliases']
                 })
 
-    # Write the index to a file
-    index_path = os.path.join(directory, 'index')
-    with open(index_path, 'w') as f:
-        json.dump(index, f, indent=4)
-
-    print(f"Index created at {index_path}")
-
     # Update the README file
     self_dir = os.path.dirname(os.path.realpath(__file__))
-    # print(f"Self dir: {}")
     readme_path = os.path.join(self_dir, '..', 'README.md')
 
     print(f"Updating README at {readme_path}")
