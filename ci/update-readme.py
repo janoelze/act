@@ -54,7 +54,7 @@ def create_index(directory):
         with open(readme_path, 'r') as f:
             content = f.read()
 
-        table_header = "| Title | Description |  |\n| --- | --- | --- |\n"
+        table_header = "| Command | Description |  |\n| --- | --- | --- |\n"
         table_rows = "\n".join(
             f"| **{script['command']}** | {script['description'] or ''} (Created by {script['author'] or 'n/a'}) | [View]({script['file']}) |"
             for script in index['scripts']
