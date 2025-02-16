@@ -52,7 +52,7 @@ Uninstall act by running the following command:
 curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/uninstall.sh | sh
 ```
 
-## SCRIPTS
+## COMMUNITY SCRIPTS
 
 <!-- ACT_SCRIPTS_START -->
 | Command | Description |  |
