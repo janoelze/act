@@ -4,7 +4,7 @@
 
 ## WHY
 
-I really love the simplicity of uv's [inline dependency definitions](https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies) right on top of Python files. `act` takes this idea and extends the script header with a `command` property and then allows global calls to these scripts by their command name via, for example, `act run helloworld`. Additionally shims are created for each script in the `~/.act/bin` directory, making script execution easy to remember.
+I really love the simplicity of uv's [inline dependency definitions](https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies) right on top of Python files. `act` takes this idea and extends the script header with a `command` property and then allows global calls to these scripts by their command name via, for example, `act run helloworld`. Additionally shims are created for each script in the `~/.act/bin` directory, allowing you to run scripts directly without the `act run` prefix.
 
 ## SYNOPSIS
 
