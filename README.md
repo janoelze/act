@@ -67,6 +67,7 @@ curl -fsSL https://raw.githubusercontent.com/janoelze/act/main/uninstall.sh | sh
 | **resize** | Resizes the images in the current directory to a specified width (Created by janoelze) | [View](./community-scripts/resize.py) |
 | **tomp3** | Convert any file format to an MP3 using ffmpeg (Created by janoelze) | [View](./community-scripts/tomp3.py) |
 | **tomp4** | Convert any video format to a web-ready MP4 with small file size and reasonable resolution (Created by janoelze) | [View](./community-scripts/tomp4.py) |
+| **transcript** | Fetch and display a YouTube video's transcript (Created by Jan) | [View](./community-scripts/yt-transcript.py) |
 | **vpntoggle** | Toggle VPN connection using OpenVPN (Created by janoelze) | [View](./community-scripts/vpntoggle.py) |
 | **weather** | Get the current weather in Berlin (Created by janoelze) | [View](./community-scripts/weather.py) |
 | **ytdl** | Download YouTube videos via yt-dlp (Created by janoelze) | [View](./community-scripts/ytdl.py) |
